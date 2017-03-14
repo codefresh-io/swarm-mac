@@ -51,15 +51,18 @@ for i in $(seq "${NUM_WORKERS}"); do
     -p ${i}5000:5000 \
     -p ${i}5001:5001 \
     -p ${i}5601:5601 \
-    -v $PWD/cdata/worker-${i}:/var/lib/docker \
-    docker:1.13.1-dind --registry-mirror http://${SWARM_MASTER}:4000
+    docker:17.03.0-ce-dind \
+      --storage-driver=overlay2 \
+      --registry-mirror http://${SWARM_MASTER}:4000
   $(tput sgr 0)"
   docker run -d --privileged --name "worker-${i}" --hostname="worker-${i}" \
     -p ${i}2375:2375 \
     -p ${i}5000:5000 \
     -p ${i}5001:5001 \
     -p ${i}5601:5601 \
-    docker:1.13.1-dind --registry-mirror "http://${SWARM_MASTER}:4000"
+    docker:17.03.0-ce-dind \
+      --storage-driver=overlay2 \
+      --registry-mirror "http://${SWARM_MASTER}:4000"
   printf "\ndone, press key to continue ...\n"
   read -rn1
   # add worker container to the cluster
